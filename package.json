@@ -4,8 +4,9 @@
   "description": "Application to let users save informations about interesting blogs. For each listed blog we will save the author, title, URL, and amount of upvotes from users of the application.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "test": "npx jest --verbose",
+    "dev": "nodemon index.js",
+    "lint": "eslint ."
   },
   "author": "Oualeeed",
   "license": "ISC",
@@ -15,5 +16,13 @@
     "express": "^4.18.2",
     "mongoose": "^7.3.2",
     "nodemon": "^3.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
