@@ -60,6 +60,35 @@ test('If the likes proprety is messing from the bldy request it will saved as ze
     .expect('Content-Type', /application\/json/)
 
   expect(response.body.likes).toBe(0)
+  await Blog.findByIdAndRemove(response.body.id)
+})
+
+test('A messing title lead to a badd request 400', async () => {
+  const blog = {
+    title: '',
+    author: 'no title',
+    url: 'url',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+})
+
+test('A messing author name lead to a badd request 400', async () => {
+  const blog = {
+    title: 'no author',
+    author: '',
+    url: 'url',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
 })
 
 afterAll(async () => {

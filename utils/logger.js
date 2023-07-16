@@ -1,12 +1,12 @@
 const info = (...params) => {
-  // eslint-disable-next-line no-console
   if (process.env.NODE_ENV === 'test') return
+  // eslint-disable-next-line no-console
   console.log(...params)
 }
 
 const error = (...params) => {
-  // eslint-disable-next-line no-console
   if (process.env.NODE_ENV === 'test') return
+  // eslint-disable-next-line no-console
   console.error(...params)
 }
 
