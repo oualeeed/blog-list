@@ -44,6 +44,7 @@ test('a new blog can be added', async () => {
   const blogs = await api.get('/api/blogs')
   expect((blogs).body).toHaveLength(testHelper.initialesBlogs.length + 1)
   expect((blogs).body).toContainEqual(response.body)
+  await Blog.findByIdAndRemove(response.body.id)
 }, 100000)
 
 test('If the likes proprety is messing from the bldy request it will saved as zero.', async () => {
@@ -91,6 +92,16 @@ test('A messing author name lead to a badd request 400', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
+test('A given bolg can be deleted', async () => {
+  const response = api.get('/api/blogs/')
+  const { id } = (await response).body[0]
+  await api
+    .delete(`/api/blogs/${id}`)
+    .expect(204)
+
+  const blogs = await api.get('/api/blogs')
+  expect(blogs.body).toHaveLength(testHelper.initialesBlogs.length - 1)
+})
 afterAll(async () => {
   await mongoose.connection.close()
 })
