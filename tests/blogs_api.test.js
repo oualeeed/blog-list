@@ -69,7 +69,12 @@ test('returns all the blogs posts in the JSON format.', async () => {
     .expect('Content-Type', /application\/json/)
 
   expect(response.body).toHaveLength(6)
-})
+}, 100000)
+
+test('every blog post is defined by the id proprety', async () => {
+  const response = await api.get('/api/blogs/')
+  expect(response.body[0].id).toBeDefined()
+}, 100000)
 
 afterAll(async () => {
   await mongoose.connection.close()
