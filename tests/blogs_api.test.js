@@ -102,6 +102,25 @@ test('A given bolg can be deleted', async () => {
   const blogs = await api.get('/api/blogs')
   expect(blogs.body).toHaveLength(testHelper.initialesBlogs.length - 1)
 })
+
+test('a blog can be edited by a put request', async () => {
+  const response = await api.get('/api/blogs')
+  let blogTobeEdited = response.body[0]
+
+  blogTobeEdited = {
+    ...blogTobeEdited,
+    title: 'Edited title',
+    likes: 10,
+  }
+  await api
+    .put(`/api/blogs/${blogTobeEdited.id}`)
+    .send(blogTobeEdited)
+    .expect(200)
+
+  const result = api.get('/api/blogs')
+  expect((await result).body).toContainEqual(blogTobeEdited)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
