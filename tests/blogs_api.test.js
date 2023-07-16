@@ -46,6 +46,22 @@ test('a new blog can be added', async () => {
   expect((blogs).body).toContainEqual(response.body)
 }, 100000)
 
+test('If the likes proprety is messing from the bldy request it will saved as zero.', async () => {
+  const blog = {
+    title: 'i\'ll be deleted soon',
+    author: 'author',
+    url: 'url',
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(response.body.likes).toBe(0)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
