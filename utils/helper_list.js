@@ -56,10 +56,10 @@ const mostLikes = (blogs) => {
     ? answer
     : current)
 
-  const mostBloger = Object.keys(numberOflikes).reduce(reducer, numberOflikes[0])
+  const mostLikedBloger = Object.keys(numberOflikes).reduce(reducer, numberOflikes[0])
   return {
-    author: mostBloger,
-    likes: numberOflikes[mostBloger],
+    author: mostLikedBloger,
+    likes: numberOflikes[mostLikedBloger],
   }
 }
 
