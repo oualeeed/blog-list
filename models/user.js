@@ -1,11 +1,22 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose')
+// eslint-disable-next-line import/no-extraneous-dependencies
+const uniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = mongoose.Schema({
   name: String,
-  username: String,
-  passwordHash: String,
+  username: {
+    type: String,
+    minLength: 3,
+    required: true,
+    unique: true,
+  },
+  passwordHash: {
+    type: String,
+    required: true,
+    minLength: 3,
+  },
   blogs: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,6 +24,8 @@ const userSchema = mongoose.Schema({
     },
   ],
 })
+
+userSchema.plugin(uniqueValidator)
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -23,4 +36,4 @@ userSchema.set('toJSON', {
   },
 })
 
-module.exports = mongoose.Model('User', userSchema)
+module.exports = mongoose.model('User', userSchema)
