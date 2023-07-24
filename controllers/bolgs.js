@@ -1,14 +1,26 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/User')
 
 blogRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog
+    .find({})
+    .populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
 blogRouter.post('/', async (request, response) => {
-  const blog = new Blog(request.body)
+  const users = await User.find({})
+  const userAtFirst = users[0]
+  const blog = new Blog({
+    ...request.body,
+    user: userAtFirst.id,
+  })
   const result = await blog.save()
+  // eslint-disable-next-line no-underscore-dangle
+  userAtFirst.blogs = userAtFirst.blogs.concat(result._id)
+  await userAtFirst.save()
+
   response.status(201).json(result)
 })
 

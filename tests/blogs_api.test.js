@@ -1,6 +1,7 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const app = require('../app')
 const testHelper = require('./helper_test')
 
@@ -41,9 +42,15 @@ test('a new blog can be added', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
+  const u = await User.findById(response.body.user)
+  const user = {
+    name: u.name,
+    username: u.username,
+    id: u.id,
+  }
   const blogs = await api.get('/api/blogs')
   expect((blogs).body).toHaveLength(testHelper.initialesBlogs.length + 1)
-  expect((blogs).body).toContainEqual(response.body)
+  expect((blogs).body).toContainEqual({ ...response.body, user })
   await Blog.findByIdAndRemove(response.body.id)
 }, 100000)
 

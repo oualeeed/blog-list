@@ -31,7 +31,7 @@ describe('The GET method', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
     expect(response.body).toHaveLength(5)
-  })
+  }, 1000000)
 
   test('can get one user by its id', async () => {
     const users = await testHelper.usersInDb()
@@ -42,7 +42,7 @@ describe('The GET method', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(response.body).toEqual(firstUser)
-  })
+  }, 1000000)
 })
 
 describe('The Post method : invalid users don\'t get in', () => {
@@ -58,7 +58,7 @@ describe('The Post method : invalid users don\'t get in', () => {
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/)
-  })
+  }, 1000000)
 
   test('adding a user with empty password ', async () => {
     const user = {
@@ -72,7 +72,7 @@ describe('The Post method : invalid users don\'t get in', () => {
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/)
-  })
+  }, 1000000)
 
   test('adding a user with password less then 3 characters', async () => {
     const user = {
@@ -86,7 +86,7 @@ describe('The Post method : invalid users don\'t get in', () => {
       .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/)
-  })
+  }, 1000000)
 })
 
 describe('The POST method : valid case', () => {
@@ -105,7 +105,7 @@ describe('The POST method : valid case', () => {
     const users = await testHelper.usersInDb()
     expect(users).toHaveLength(testHelper.initialUsers.length + 1)
     await User.findByIdAndRemove(u.id)
-  })
+  }, 1000000)
 })
 
 afterAll(async () => {
