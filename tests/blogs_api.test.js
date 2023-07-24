@@ -8,8 +8,8 @@ const api = supertest(app)
 
 beforeEach(async () => {
   const { initialesBlogs } = testHelper
-
   await Blog.deleteMany({})
+
   const Blogs = initialesBlogs.map((blog) => new Blog(blog))
   const arrayOfPromises = Blogs.map((blog) => blog.save())
   await Promise.all(arrayOfPromises)

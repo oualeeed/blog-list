@@ -1,3 +1,5 @@
+const User = require('../models/user')
+
 const initialesBlogs = [
   {
     _id: '5a422a851b54a676234d17f7',
@@ -49,4 +51,36 @@ const initialesBlogs = [
   },
 ]
 
-module.exports = { initialesBlogs }
+const initialUsers = [
+  {
+    username: 'Oualeed',
+    password: 'password',
+    name: 'Oualid El-feraoui',
+  },
+  {
+    username: 'z3aibila',
+    password: 'password1',
+    name: 'Oussama El-feraoui',
+  },
+  {
+    username: 'Laroussia',
+    password: 'password2',
+    name: 'Asmae Bachiri Laaroussi',
+  },
+  {
+    username: 'briwita',
+    password: 'password4',
+    name: 'Mustapha El-ketoni',
+  },
+  {
+    username: 'b3iwida',
+    password: 'password5',
+    name: 'Abdo',
+  },
+]
+
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map((user) => user.toJSON())
+}
+module.exports = { initialesBlogs, initialUsers, usersInDb }
