@@ -1,6 +1,8 @@
 const blogRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
+const config = require('../utils/config')
 const Blog = require('../models/blog')
-const User = require('../models/User')
+const User = require('../models/user')
 
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -9,19 +11,38 @@ blogRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
+const getToken = (request) => {
+  const authorization = request.get('authorization')
+  if (!(authorization && authorization.startsWith('Bearer '))) { return null }
+  return authorization.replace('Bearer ', '')
+}
+
 blogRouter.post('/', async (request, response) => {
-  const users = await User.find({})
-  const userAtFirst = users[0]
+  const { body } = request
+  const decodedToken = jwt.verify(getToken(request), config.SECRET)
+  if (!decodedToken.id) {
+    return response
+      .status(401)
+      .json({
+        error: 'token invalid',
+      })
+  }
+
+  const user = await User.findById(decodedToken.id)
   const blog = new Blog({
-    ...request.body,
-    user: userAtFirst.id,
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    // eslint-disable-next-line no-underscore-dangle
+    user: user._id,
   })
+
   const result = await blog.save()
   // eslint-disable-next-line no-underscore-dangle
-  userAtFirst.blogs = userAtFirst.blogs.concat(result._id)
-  await userAtFirst.save()
+  user.blogs = user.blogs.concat(result._id)
+  await user.save()
 
-  response.status(201).json(result)
+  return response.status(201).json(result)
 })
 
 blogRouter.delete('/:id', async (request, response) => {
