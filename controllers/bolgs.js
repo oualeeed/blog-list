@@ -39,7 +39,7 @@ blogRouter.delete('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
   const { user } = request
   // eslint-disable-next-line no-underscore-dangle
-  if (!(user && blog.user === user._id)) {
+  if (!(blog.user.toString() === user._id.toString())) {
     return response
       .status(401)
       .json({
