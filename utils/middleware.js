@@ -1,4 +1,7 @@
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
 const logger = require('./logger')
+const config = require('./config')
 
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
@@ -19,6 +22,17 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+const userExtractor = async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, config.SECRET)
+  logger.info('decoded token ', decodedToken)
+  logger.info('token ', request.token)
+  if (decodedToken.id) {
+    const user = await User.findById(decodedToken.id)
+    request.user = user
+  }
+  next()
+}
+
 const requestLogger = (request, response, next) => {
   logger.info('----------------')
   logger.info('Path', request.path)
@@ -27,4 +41,6 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
-module.exports = { errorHandler, tokenExtractor, requestLogger }
+module.exports = {
+  errorHandler, tokenExtractor, requestLogger, userExtractor,
+}

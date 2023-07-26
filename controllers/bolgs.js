@@ -1,8 +1,5 @@
 const blogRouter = require('express').Router()
-const jwt = require('jsonwebtoken')
-const config = require('../utils/config')
 const Blog = require('../models/blog')
-const User = require('../models/user')
 
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -13,8 +10,8 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.post('/', async (request, response) => {
   const { body } = request
-  const decodedToken = jwt.verify(request.token, config.SECRET)
-  if (!decodedToken.id) {
+  const { user } = request
+  if (!user) {
     return response
       .status(401)
       .json({
@@ -22,7 +19,6 @@ blogRouter.post('/', async (request, response) => {
       })
   }
 
-  const user = await User.findById(decodedToken.id)
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -40,9 +36,10 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, config.SECRET)
   const blog = await Blog.findById(request.params.id)
-  if (!(decodedToken.id && (decodedToken.id === blog.user.toString()))) {
+  const { user } = request
+  // eslint-disable-next-line no-underscore-dangle
+  if (!(user && blog.user === user._id)) {
     return response
       .status(401)
       .json({
