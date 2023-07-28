@@ -83,4 +83,23 @@ const usersInDb = async () => {
   const users = await User.find({})
   return users.map((user) => user.toJSON())
 }
-module.exports = { initialesBlogs, initialUsers, usersInDb }
+
+const authenticateAndGetToken = async (api) => {
+  const userForTest = {
+    username: 'Oualid',
+    password: 'password',
+  }
+  const { body } = await api
+    .post('/api/login')
+    .send(userForTest)
+
+  return body.token
+}
+
+const userForTest = async () => {
+  const savedUser = await User.findOne({ username: 'Oualid' })
+  return savedUser
+}
+module.exports = {
+  initialesBlogs, initialUsers, usersInDb, userForTest, authenticateAndGetToken,
+}
