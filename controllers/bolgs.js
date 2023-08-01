@@ -27,11 +27,13 @@ blogRouter.post('/', async (request, response) => {
     user: user._id,
   })
 
-  const result = await blog.save()
+  const savedBlog = await blog.save()
   // eslint-disable-next-line no-underscore-dangle
-  user.blogs = user.blogs.concat(result._id)
+  user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
+  const result = await savedBlog.populate('user', { username: 1, name: 1 })
+  // eslint-disable-next-line no-underscore-dangle
   return response.status(201).json(result)
 })
 
@@ -50,7 +52,7 @@ blogRouter.delete('/:id', async (request, response) => {
   user.blogs = user.blogs.filter((b) => b.toString() !== blog.id.toString())
 
   await user.save()
-  await blog.remove()
+  await Blog.findByIdAndRemove(request.params.id)
   return response.status(204).end()
 })
 
