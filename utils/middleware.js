@@ -35,6 +35,7 @@ const userExtractor = async (request, response, next) => {
 
 const requestLogger = (request, response, next) => {
   logger.info('----------------')
+  logger.info('Metohd', request.method)
   logger.info('Path', request.path)
   logger.info('body', request.body)
   logger.info('----------------')
