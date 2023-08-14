@@ -56,7 +56,18 @@ blogRouter.delete('/:id', async (request, response) => {
   return response.status(204).end()
 })
 
+// eslint-disable-next-line consistent-return
 blogRouter.put('/:id', async (request, response) => {
+  const { user } = request.body
+
+  if (!user) {
+    return response
+      .status(401)
+      .json({
+        error: 'token invalid',
+      })
+  }
+
   const blog = {
     title: request.body.title,
     author: request.body.author,
@@ -65,7 +76,8 @@ blogRouter.put('/:id', async (request, response) => {
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-  response.json(updatedBlog)
+  const result = await updatedBlog.populate('user', { username: 1, name: 1 })
+  response.json(result)
 })
 
 module.exports = blogRouter
