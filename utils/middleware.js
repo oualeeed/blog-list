@@ -22,6 +22,7 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+// eslint-disable-next-line consistent-return
 const userExtractor = async (request, response, next) => {
   if (request.token) {
     const decodedToken = jwt.verify(request.token, config.SECRET)

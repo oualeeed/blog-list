@@ -19,10 +19,11 @@ userRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
   const saltRounds = 10
-  const passwordHash = password > 3 && password.length
+  const passwordHash = password && password.length > 3
     ? await bcrypt.hash(password, saltRounds)
     : password
 
+  console.log(passwordHash)
   const user = new User({
     username,
     name,
